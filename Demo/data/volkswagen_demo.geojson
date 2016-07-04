@@ -27,7 +27,7 @@ var all_features = {
             "LOCATION_1": "Europe, France",
             "LOCATION_2": "Angers, Maine-et-Loire, Pays de la Loire",
             "NAME": "Angers",
-            "CREATED_DATE": 1959,
+            "CREATED_DATE": null,
             "CLOSING_DATE": null,
 			"popupContent": "Angers </br> Angers, Maine-et-Loire, Pays de la Loire </br> Europe, France </br>"
          },
@@ -36,6 +36,25 @@ var all_features = {
             "coordinates": [
 				-0.515278,
 				47.501111
+            ]
+         }
+      },
+	  {
+         "type": "Feature",
+         "properties": {
+            "OBJECTID": 1,
+            "LOCATION_1": "Asia, China",
+            "LOCATION_2": "Anting, JiadingDistrict, Shanghai",
+            "NAME": "Anting Shanghai Volkswagen",
+            "CREATED_DATE": 1985,
+            "CLOSING_DATE": null,
+			"popupContent": "Anting Shanghai Volkswagen </br> Anting, JiadingDistrict, Shanghai </br> Asia, China </br> 1985 - 2016*"
+         },
+         "geometry": {
+            "type": "Point",
+            "coordinates": [
+				121.177778,
+				31.295833
             ]
          }
       }
