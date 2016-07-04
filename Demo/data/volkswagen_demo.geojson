@@ -1,0 +1,43 @@
+var all_features = {
+   "type": "FeatureCollection",
+   "features": [
+		{
+         "type": "Feature",
+         "properties": {
+            "OBJECTID": 1,
+            "LOCATION_1": "South America, Brazil",
+            "LOCATION_2": "São Bernardo do Campo, Greater São Paulo, São Paulo state",
+            "NAME": "Rodovia Anchieta",
+            "CREATED_DATE": 1959,
+            "CLOSING_DATE": null,
+			"popupContent": "Rodovia Anchieta </br> São Bernardo do Campo, Greater São Paulo, São Paulo state </br> South America, Brazil </br> 1959 - 2016*"
+         },
+         "geometry": {
+            "type": "Point",
+            "coordinates": [
+				-46.54653,
+				-23.735217
+            ]
+         }
+      },
+	  {
+         "type": "Feature",
+         "properties": {
+            "OBJECTID": 1,
+            "LOCATION_1": "Europe, France",
+            "LOCATION_2": "Angers, Maine-et-Loire, Pays de la Loire",
+            "NAME": "Angers",
+            "CREATED_DATE": 1959,
+            "CLOSING_DATE": null,
+			"popupContent": "Angers </br> Angers, Maine-et-Loire, Pays de la Loire </br> Europe, France </br>"
+         },
+         "geometry": {
+            "type": "Point",
+            "coordinates": [
+				-0.515278,
+				47.501111
+            ]
+         }
+      }
+	]
+}
