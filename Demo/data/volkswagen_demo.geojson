@@ -1,23 +1,23 @@
 var all_features = {
    "type": "FeatureCollection",
    "features": [
-		{
+	  {
          "type": "Feature",
          "properties": {
             "OBJECTID": 1,
-            "LOCATION_1": "South America, Brazil",
-            "LOCATION_2": "Säo Bernardo do Campo, Greater Säo Paulo, Säo Paulo state",
-            "NAME": "Rodovia Anchieta",
-            "CREATED_DATE": 1959,
+            "LOCATION_1": "Europe, Germany",
+            "LOCATION_2": "Wolfsburg, LowerSaxony",
+            "NAME": "Wolfsburg",
+            "CREATED_DATE": 1938,
             "CLOSING_DATE": null,
-			"LINK": "http://www.volkswagen.com.br/",
-			"POPUP_CONTENT": "<b>Rodovia Anchieta</b> </br> Sao Bernardo do Campo, Greater Sao Paulo, </br> Sao Paulo state, </br> South America, Brazil. </br> (1959 - 2016*)"
+			"LINK": "http://www.volkswagen.de/",
+			"POPUP_CONTENT": "<b>Wolfsburg</b> </br> Wolfsburg, LowerSaxony, </br> Europe, Germany </br> (1938 - 2016*)"
          },
          "geometry": {
             "type": "Point",
             "coordinates": [
-				-46.54653,
-				-23.735217
+				10.769167,
+				52.436389
             ]
          }
       },
@@ -64,10 +64,30 @@ var all_features = {
 				]]
 			}
 		},
-	  {
+		{
          "type": "Feature",
          "properties": {
             "OBJECTID": 3,
+            "LOCATION_1": "South America, Brazil",
+            "LOCATION_2": "Säo Bernardo do Campo, Greater Säo Paulo, Säo Paulo state",
+            "NAME": "Rodovia Anchieta",
+            "CREATED_DATE": 1959,
+            "CLOSING_DATE": null,
+			"LINK": "http://www.volkswagen.com.br/",
+			"POPUP_CONTENT": "<b>Rodovia Anchieta</b> </br> Sao Bernardo do Campo, Greater Sao Paulo, </br> Sao Paulo state, </br> South America, Brazil. </br> (1959 - 2016*)"
+         },
+         "geometry": {
+            "type": "Point",
+            "coordinates": [
+				-46.54653,
+				-23.735217
+            ]
+         }
+      },
+	  {
+         "type": "Feature",
+         "properties": {
+            "OBJECTID": 4,
             "LOCATION_1": "Asia, China",
             "LOCATION_2": "Anting, JiadingDistrict, Shanghai",
             "NAME": "Anting Shanghai Volkswagen",
@@ -83,6 +103,6 @@ var all_features = {
 				31.295833
             ]
          }
-      }
+      } 
 	]
 }
