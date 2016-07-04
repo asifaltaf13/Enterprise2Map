@@ -30,11 +30,15 @@ function main()
 			if(feature.properties.OBJECTID)
 			{
 				objectIdHolder = feature.properties.OBJECTID
-				popupContent += "Factory ID: " + feature.properties.OBJECTID + "</br>";
+				popupContent += "Factory ID: " + feature.properties.OBJECTID + "</br></br>";
 			}
 			if(feature.properties.POPUP_CONTENT)
 			{
 				popupContent += feature.properties.POPUP_CONTENT;
+			}
+			if(feature.properties.LINK)
+			{
+				popupContent += "</br></br><a href="+feature.properties.LINK+"> "+feature.properties.LINK+" </a> ";
 			}
 		}
 

@@ -6,11 +6,12 @@ var all_features = {
          "properties": {
             "OBJECTID": 1,
             "LOCATION_1": "South America, Brazil",
-            "LOCATION_2": "São Bernardo do Campo, Greater São Paulo, São Paulo state",
+            "LOCATION_2": "Säo Bernardo do Campo, Greater Säo Paulo, Säo Paulo state",
             "NAME": "Rodovia Anchieta",
             "CREATED_DATE": 1959,
             "CLOSING_DATE": null,
-			"POPUP_CONTENT": "Rodovia Anchieta </br> São Bernardo do Campo, Greater São Paulo, São Paulo state </br> South America, Brazil </br> 1959 - 2016*"
+			"LINK": "http://www.volkswagen.com.br/",
+			"POPUP_CONTENT": "<b>Rodovia Anchieta</b> </br> Sao Bernardo do Campo, Greater Sao Paulo </br> Sao Paulo state </br> South America, Brazil </br> (1959 - 2016*)"
          },
          "geometry": {
             "type": "Point",
@@ -29,7 +30,8 @@ var all_features = {
             "NAME": "Angers",
             "CREATED_DATE": null,
             "CLOSING_DATE": null,
-			"POPUP_CONTENT": "Angers </br> Angers, Maine-et-Loire, Pays de la Loire </br> Europe, France </br>"
+			"LINK": "http://www.volkswagen.fr/",
+			"POPUP_CONTENT": "<b>Angers</b> </br> Maine-et-Loire, </br> Pays de la Loire, </br> Europe, France."
          },
          "geometry": {
             "type": "Point",
@@ -71,7 +73,8 @@ var all_features = {
             "NAME": "Anting Shanghai Volkswagen",
             "CREATED_DATE": 1985,
             "CLOSING_DATE": null,
-			"POPUP_CONTENT": "Anting Shanghai Volkswagen </br> Anting, JiadingDistrict, Shanghai </br> Asia, China </br> 1985 - 2016*"
+			"LINK": "http://www.vw.com.cn/",
+			"POPUP_CONTENT": "<b>Anting Shanghai Volkswagen</b> </br> Anting, JiadingDistrict, </br> Shanghai, </br> Asia, China. </br> (1985 - 2016*)"
          },
          "geometry": {
             "type": "Point",
