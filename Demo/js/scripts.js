@@ -12,8 +12,16 @@ function main() {
 		function onEachFeature(feature, layer) {
 			var popupContent = "";
 
-			if (feature.properties && feature.properties.popupContent) {
-				popupContent += feature.properties.popupContent;
+			if (feature.properties) 
+			{
+				if(feature.properties.OBJECTID)
+				{
+					popupContent += "Factory ID: " + feature.properties.OBJECTID + "</br>";
+				}
+				if(feature.properties.popupContent)
+				{
+					popupContent += feature.properties.popupContent;
+				}
 			}
 
 			layer.bindPopup(popupContent);

@@ -23,7 +23,7 @@ var all_features = {
 	  {
          "type": "Feature",
          "properties": {
-            "OBJECTID": 1,
+            "OBJECTID": 2,
             "LOCATION_1": "Europe, France",
             "LOCATION_2": "Angers, Maine-et-Loire, Pays de la Loire",
             "NAME": "Angers",
@@ -42,7 +42,7 @@ var all_features = {
 	  {
          "type": "Feature",
          "properties": {
-            "OBJECTID": 1,
+            "OBJECTID": 3,
             "LOCATION_1": "Asia, China",
             "LOCATION_2": "Anting, JiadingDistrict, Shanghai",
             "NAME": "Anting Shanghai Volkswagen",
