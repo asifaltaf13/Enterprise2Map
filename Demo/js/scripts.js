@@ -2,6 +2,8 @@ jQuery(document).ready(main)
 
 function main() 
 {
+	var popUpMap = {};
+	var objectIdHolder;
 	var mymap = L.map('map', {}).setView([-0.515278, 47.501111], 2);
 
 	L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiczZhc2FsdGEiLCJhIjoiY2lveXUwb3dqMDBlaXZ2bHdoZjQ5dHlrbiJ9.xKMDfR_36OSyxiBT_jftig', {
@@ -27,15 +29,25 @@ function main()
 		{
 			if(feature.properties.OBJECTID)
 			{
+				objectIdHolder = feature.properties.OBJECTID
 				popupContent += "Factory ID: " + feature.properties.OBJECTID + "</br>";
 			}
-			if(feature.properties.popupContent)
+			if(feature.properties.POPUP_CONTENT)
 			{
-				popupContent += feature.properties.popupContent;
+				popupContent += feature.properties.POPUP_CONTENT;
 			}
 		}
 
-		layer.bindPopup(popupContent);
+		if(objectIdHolder in popUpMap)
+		{
+			layer.bindPopup(popUpMap[objectIdHolder]);
+		}
+		
+		else
+		{
+			popUpMap[objectIdHolder] = popupContent; 
+			layer.bindPopup(popupContent);			
+		}
 	}
 
 	L.geoJson(all_features, {

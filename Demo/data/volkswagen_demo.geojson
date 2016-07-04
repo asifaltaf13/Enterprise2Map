@@ -10,7 +10,7 @@ var all_features = {
             "NAME": "Rodovia Anchieta",
             "CREATED_DATE": 1959,
             "CLOSING_DATE": null,
-			"popupContent": "Rodovia Anchieta </br> São Bernardo do Campo, Greater São Paulo, São Paulo state </br> South America, Brazil </br> 1959 - 2016*"
+			"POPUP_CONTENT": "Rodovia Anchieta </br> São Bernardo do Campo, Greater São Paulo, São Paulo state </br> South America, Brazil </br> 1959 - 2016*"
          },
          "geometry": {
             "type": "Point",
@@ -29,32 +29,13 @@ var all_features = {
             "NAME": "Angers",
             "CREATED_DATE": null,
             "CLOSING_DATE": null,
-			"popupContent": "Angers </br> Angers, Maine-et-Loire, Pays de la Loire </br> Europe, France </br>"
+			"POPUP_CONTENT": "Angers </br> Angers, Maine-et-Loire, Pays de la Loire </br> Europe, France </br>"
          },
          "geometry": {
             "type": "Point",
             "coordinates": [
 				-0.515278,
 				47.501111
-            ]
-         }
-      },
-	  {
-         "type": "Feature",
-         "properties": {
-            "OBJECTID": 3,
-            "LOCATION_1": "Asia, China",
-            "LOCATION_2": "Anting, JiadingDistrict, Shanghai",
-            "NAME": "Anting Shanghai Volkswagen",
-            "CREATED_DATE": 1985,
-            "CLOSING_DATE": null,
-			"popupContent": "Anting Shanghai Volkswagen </br> Anting, JiadingDistrict, Shanghai </br> Asia, China </br> 1985 - 2016*"
-         },
-         "geometry": {
-            "type": "Point",
-            "coordinates": [
-				121.177778,
-				31.295833
             ]
          }
       },
@@ -80,6 +61,25 @@ var all_features = {
 				[-0.516586, 47.501726]
 				]]
 			}
-		}	
+		},
+	  {
+         "type": "Feature",
+         "properties": {
+            "OBJECTID": 3,
+            "LOCATION_1": "Asia, China",
+            "LOCATION_2": "Anting, JiadingDistrict, Shanghai",
+            "NAME": "Anting Shanghai Volkswagen",
+            "CREATED_DATE": 1985,
+            "CLOSING_DATE": null,
+			"POPUP_CONTENT": "Anting Shanghai Volkswagen </br> Anting, JiadingDistrict, Shanghai </br> Asia, China </br> 1985 - 2016*"
+         },
+         "geometry": {
+            "type": "Point",
+            "coordinates": [
+				121.177778,
+				31.295833
+            ]
+         }
+      }
 	]
 }
