@@ -11,7 +11,7 @@ var all_features = {
             "CREATED_DATE": 1959,
             "CLOSING_DATE": null,
 			"LINK": "http://www.volkswagen.com.br/",
-			"POPUP_CONTENT": "<b>Rodovia Anchieta</b> </br> Sao Bernardo do Campo, Greater Sao Paulo </br> Sao Paulo state </br> South America, Brazil </br> (1959 - 2016*)"
+			"POPUP_CONTENT": "<b>Rodovia Anchieta</b> </br> Sao Bernardo do Campo, Greater Sao Paulo, </br> Sao Paulo state, </br> South America, Brazil. </br> (1959 - 2016*)"
          },
          "geometry": {
             "type": "Point",
