@@ -22,6 +22,22 @@ var all_features = {
          }
       },
 	  {
+		"type": "Feature",
+		"properties": {
+			"OBJECTID": 1
+		},
+		"geometry": {
+			"type": "Polygon",
+			"coordinates": [[
+				[10.768364, 52.432405],
+				[10.769181, 52.430268],
+				[10.772207, 52.430436],
+				[10.771442, 52.432641],
+				[10.768364, 52.432405]
+				]]
+			}
+		},
+	  {
          "type": "Feature",
          "properties": {
             "OBJECTID": 2,
@@ -103,6 +119,6 @@ var all_features = {
 				31.295833
             ]
          }
-      } 
+      }
 	]
 }
