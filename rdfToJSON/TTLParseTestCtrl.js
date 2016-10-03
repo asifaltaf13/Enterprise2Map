@@ -106,8 +106,9 @@ app.controller('TTLParseTestCtrl', function ($scope, TTLParseService) {
                 if(obj.polygons.length==1)
                 {
                     // create marker in this case
-                    var polygon = polygons[0];
-                    var marker = L.marker([parseFloat(polygon.lat.value), parseFloat(polygon.long.value)], {icon: vw_icon});
+                    var point = polygons[0];
+                    var marker = L.marker([parseFloat(point.lat.value), parseFloat(point.long.value)], {icon: vw_icon}).bindPopup(popUpContent);
+                    marker.addTo(mymap);
                 }
                 else if(obj.polygons.length>1)
                 {
