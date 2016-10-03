@@ -136,7 +136,8 @@ app.controller('TTLParseTestCtrl',function($scope,TTLParseService){
 				icon: vw_icon
 			});
 		}
-	}).addTo(mymap);
+	});
+	//}).addTo(mymap);
   }
   
 });

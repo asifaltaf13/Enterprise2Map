@@ -3,16 +3,16 @@
 @prefix owl:   <http://www.w3.org/2002/07/owl#> .
 @prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
 @prefix skos:  <http://www.w3.org/2004/02/skos/core#> .
-@prefix dbpedia: <http://dbpedia.org/resource/> .
 @prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix geo:   <http://www.w3.org/2003/01/geo/wgs84_pos#> .
+@prefix dbpedia: <http://dbpedia.org/resource/> .
 @prefix ngeo:  <http://geovocab.org/geometry#> .
-@prefix ex:    <http://example.org/> .
+@prefix geo:   <http://www.w3.org/2003/01/geo/wgs84_pos#> .
 @prefix olo:   <http://purl.org/ontology/olo/core#> .
-@prefix lgdo:  <http://linkedgeodata.org/ontology/> .
+@prefix ex:    <http://example.org/> .
 @prefix dct:   <http://purl.org/dc/terms/> .
-@prefix doap:  <http://usefulinc.com/ns/doap#> .
+@prefix lgdo:  <http://linkedgeodata.org/ontology/> .
 @prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix doap:  <http://usefulinc.com/ns/doap#> .
 @prefix vivo:  <http://vivoweb.org/ontology/core#> .
 @prefix vann:  <http://purl.org/vocab/vann/> .
 @prefix vs:    <http://www.w3.org/2003/06/sw-vocab-status/ns#> .
@@ -27,25 +27,25 @@ ex:somePlant  a        ex:Plant ;
         rdfs:label     "Plant Nevada" ;
         ex:hasFactory  ex:someFactory .
 
+ex:someFactory  a      lgdo:Factory ;
+        rdfs:label     "Gigafactory" ;
+        ex:hasPolygon  ex:somePolygon ;
+        ex:wasBuilt    2016 .
+
 ex:somePolygon  a     ngeo:Polygon ;
-        ngeo:posList  ( [ geo:lat   "39.54086" ;
+        ngeo:posList   ( [ geo:lat   "39.54086" ;
                           geo:long  "-119.44387"
                         ]
-                        [ geo:lat   "39.5403223" ;
-                          geo:long  "-119.43823"
-                        ]
-                        [ geo:lat   "39.53290" ;
+                       [ geo:lat   "39.53290" ;
                           geo:long  "-119.43730"
                         ]
                         [ geo:lat   "39.53336" ;
                           geo:long  "-119.44391"
                         ]
+                       [ geo:lat   "39.5403223" ;
+                          geo:long  "-119.43823"
+                        ]
                       ) .
-
-ex:someFactory  a      lgdo:Factory ;
-        rdfs:label     "Gigafactory" ;
-        ex:hasPolygon  ex:somePolygon ;
-        ex:wasBuilt    2016 .
 
 dbpedia:Volkswagen  a    vivo:Company ;
         rdfs:label       "Volkswagen " ;
@@ -63,16 +63,16 @@ ex:someFactory1  a     lgdo:Factory ;
         ex:wasBuilt    2010 .
 
 ex:somePolygon1  a    ngeo:Polygon ;
-        ngeo:posList  ( [ geo:lat   "39.54086" ;
-                          geo:long  "-119.44387"
+        ngeo:posList ( [ geo:lat   "52.432405" ;
+                          geo:long  "10.768364"
                         ]
-                        [ geo:lat   "39.5403223" ;
-                          geo:long  "-119.43823"
+                        [ geo:lat   "52.430268" ;
+                          geo:long  "10.769181"
                         ]
-                        [ geo:lat   "39.53290" ;
-                          geo:long  "-119.43730"
+                        [ geo:lat   "52.430436" ;
+                          geo:long  "10.772207"
                         ]
-                        [ geo:lat   "39.53336" ;
-                          geo:long  "-119.44391"
+                        [ geo:lat   "52.432641" ;
+                          geo:long  "10.771442"
                         ]
                       ) .
