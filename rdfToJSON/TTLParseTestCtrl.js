@@ -44,29 +44,56 @@ app.controller('TTLParseTestCtrl', function ($scope, TTLParseService) {
         // todo: loop all companies and pass them to createPopUp function
         // and save popups in respective maps against their key values that will be used later on
 
-        processObject($scope.parsedTTL.companies, "");
+        var polygonsToAdd = [];
+        var markersToAdd = [];
 
-        function processObject(objArray, detailsToAppendToPopUp)
+        var comps = [];
+        comps = $scope.parsedTTL.companies;
+
+        var i=0;
+        for(; i<comps.length; i++)
+        {
+            processObject(comps[i], "");
+        }
+
+        var looper=0;
+        for(looper=0; looper<polygonsToAdd.length; looper++)
+        {
+            polygonsToAdd[looper].addTo(mymap);
+        }
+
+        for(looper=0; looper<markersToAdd.length; looper++)
+        {
+            markersToAdd[looper].addTo(mymap);
+        }
+
+
+        function processObjectsArray(objArray, detailsToAppendToPopUp)
         {
             for (objNumber = 0; objNumber < objArray.length; objNumber++)
             {
-                // create its own popUp
-                var popUpContent = createPopUp(objArray[objNumber], detailsToAppendToPopUp);
-
-                // create its Annotation if required
-                createAnnotation(objArray[objNumber], popUpContent);
-
-                // check in case it has more arrays, process them too
                 var obj = objArray[objNumber];
-                var objKeys = Object.keys(obj);
-                for(keyNumber=0; keyNumber < objKeys.length; keyNumber++)
+                processObject(obj, detailsToAppendToPopUp);
+            }
+        }
+
+        function processObject(obj, detailsToAppendToPopUp)
+        {
+            // create its own popUp
+            var popUpContent = createPopUp(obj, detailsToAppendToPopUp);
+
+            // create its Annotation if required
+            createAnnotation(obj, popUpContent);
+
+            // check in case it has more arrays, process them too
+            var objKeys = Object.keys(obj);
+            for(keyNumber=0; keyNumber < objKeys.length; keyNumber++)
+            {
+                keyValue = objKeys[keyNumber];
+                subObj = obj[keyValue];
+                if(keyValue!="polygons" && subObj instanceof Array)
                 {
-                    keyValue = objKeys[keyNumber];
-                    subObj = obj[keyValue];
-                    if(keyValue!="polygons" && subObj instanceof Array)
-                    {
-                        processObject(subObj, popUpContent);
-                    }
+                    processObjectsArray(subObj, popUpContent);
                 }
             }
         }
@@ -110,7 +137,7 @@ app.controller('TTLParseTestCtrl', function ($scope, TTLParseService) {
                     // create marker in this case
                     var point = polygons[0];
                     var marker = L.marker([parseFloat(point.lat.value), parseFloat(point.long.value)], {icon: industry_icon}).bindPopup(popUpContent);
-                    marker.addTo(mymap);
+                    markersToAdd.push(marker);
                 }
                 else if(obj.polygons.length>1)
                 {
@@ -122,13 +149,13 @@ app.controller('TTLParseTestCtrl', function ($scope, TTLParseService) {
                         polygonPointsArray.push([parseFloat(point.lat.value), parseFloat(point.long.value)])
                     }
 
-                    var polygonToAdd = L.polygon(polygonPointsArray);
-                    polygonToAdd.addTo(mymap).bindPopup(popUpContent);
+                    var polygonToAdd = L.polygon(polygonPointsArray).bindPopup(popUpContent);
+                    polygonsToAdd.push(polygonToAdd);
 
                     var centerOfPolygon = polygonToAdd.getBounds().getCenter();
 
                     var companyMarker = L.marker(centerOfPolygon, {icon: industry_icon}).bindPopup(popUpContent);
-                    companyMarker.addTo(mymap);
+                    markersToAdd.push(companyMarker);
                 }
             }
         }
