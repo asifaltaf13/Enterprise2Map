@@ -3,94 +3,185 @@
 @prefix owl:   <http://www.w3.org/2002/07/owl#> .
 @prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
 @prefix skos:  <http://www.w3.org/2004/02/skos/core#> .
-@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix dbpedia: <http://dbpedia.org/resource/> .
-@prefix ngeo:  <http://geovocab.org/geometry#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix eis:   <http://example.com/owl/eis/> .
 @prefix geo:   <http://www.w3.org/2003/01/geo/wgs84_pos#> .
+@prefix ngeo:  <http://geovocab.org/geometry#> .
 @prefix olo:   <http://purl.org/ontology/olo/core#> .
-@prefix dct:   <http://purl.org/dc/terms/> .
 @prefix lgdo:  <http://linkedgeodata.org/ontology/> .
-@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix dct:   <http://purl.org/dc/terms/> .
 @prefix doap:  <http://usefulinc.com/ns/doap#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix vivo:  <http://vivoweb.org/ontology/core#> .
 @prefix vann:  <http://purl.org/vocab/vann/> .
 @prefix vs:    <http://www.w3.org/2003/06/sw-vocab-status/ns#> .
-@prefix eis:   <http://example.com/owl/eis/> .
 
-dbpedia:Tesla_Motors  a  vivo:Company ;
-        rdfs:label      "Tesla Motors" ;
-        eis:hasCEO      dbpedia:Elon_Musk ;
-        eis:hasPlant    eis:somePlant ;
-        eis:wasBuilt    2003;
-        eis:headquarters  <http://dbpedia.org/resource/Palo_Alto,_California> .
+dbpedia:Tesla_Motors  a   vivo:Company ;
+        rdfs:label        "Tesla Motors" ;
+        eis:hasCEO        dbpedia:Elon_Musk ;
+        eis:hasPlant      eis:somePlant ;
+        eis:headquarters  <http://dbpedia.org/resource/Palo_Alto,_California> ;
+        eis:wasBuilt      2003 .
 
 eis:somePlant  a        eis:Plant ;
-        rdfs:label     "Plant Nevada" ;
-        eis:manager  dbpedia:Jens_Peter_Clausen;
-        eis:workers  120;
-        eis:hasFactory  eis:someFactory .
+        rdfs:label      "Plant Nevada" ;
+        eis:hasFactory  eis:someFactory ;
+        eis:manager     dbpedia:Jens_Peter_Clausen ;
+        eis:workers     120 .
 
-eis:someFactory  a      lgdo:Factory ;
-        rdfs:label     "Gigafactory" ;
-        eis:hasPolygon  eis:somePolygon ;
-        eis:hasBuilding eis:someBuilding ;
-        eis:wasBuilt    2016 .
+eis:someFactory  a       lgdo:Factory ;
+        rdfs:label       "Gigafactory" ;
+        eis:hasBuilding  eis:someBuilding ;
+        eis:hasPolygon   eis:somePolygon ;
+        eis:wasBuilt     2016 .
 
-eis:someBuilding a              eis:Building;
-                 eis:hasMachine eis:someMachine;
-                 eis:hasPolygon eis:someBuildingPolygon.
+eis:somePolygon  a    ngeo:Polygon ;
+        ngeo:posList  ( [ geo:lat   "39.54086" ;
+                          geo:long  "-119.44387"
+                        ]
+                        [ geo:lat   "39.5403223" ;
+                          geo:long  "-119.43823"
+                        ]
+                        [ geo:lat   "39.53290" ;
+                          geo:long  "-119.43730"
+                        ]
+                        [ geo:lat   "39.53336" ;
+                          geo:long  "-119.44391"
+                        ]
+                      ) .
 
-eis:someMachine a eis:Machine;
-                  rdfs:label "Machine 1";
-                  eis:manager dbpedia:Manager_Machine_1;
-                  eis:floor 3;
-                  eis:hasPolygon eis:someMachinePolygon.
+eis:someBuilding  a     eis:Building ;
+        eis:hasMachine  eis:someMachine ;
+        eis:hasPolygon  eis:someBuildingPolygon .
 
-eis:someBuildingPolygon a ngeo:Polygon;
-                        ngeo:posList  (
-                                        [ geo:lat   "39.54086" ;
-                                          geo:long  "-119.44387"
-                                        ]
-                                        [ geo:lat   "39.5403223" ;
-                                          geo:long  "-119.43823"
-                                        ]
-                                        [ geo:lat   "39.53290" ;
-                                          geo:long  "-119.43730"
-                                        ]
-                                        [ geo:lat   "39.53336" ;
-                                          geo:long  "-119.44391"
-                                        ]
-                                      ) .
+eis:someMachine  a      eis:Machine ;
+        rdfs:label      "Machine 1" ;
+        eis:floor       3 ;
+        eis:hasPolygon  eis:someMachinePolygon ;
+        eis:manager     dbpedia:Manager_Machine_1 .
 
+eis:someBuildingPolygon
+        a             ngeo:Polygon ;
+        ngeo:posList  ( [ geo:lat   "39.54086" ;
+                          geo:long  "-119.44387"
+                        ]
+                        [ geo:lat   "39.5403223" ;
+                          geo:long  "-119.43823"
+                        ]
+                        [ geo:lat   "39.53290" ;
+                          geo:long  "-119.43730"
+                        ]
+                        [ geo:lat   "39.53336" ;
+                          geo:long  "-119.44391"
+                        ]
+                      ) .
 
-eis:somePolygon  a     ngeo:Polygon ;
-        				ngeo:posList  (
-										[ geo:lat   "39.54086" ;
-				                          geo:long  "-119.44387"
-				                        ]
-				                        [ geo:lat   "39.5403223" ;
-				                          geo:long  "-119.43823"
-				                        ]
-				                        [ geo:lat   "39.53290" ;
-				                          geo:long  "-119.43730"
-				                        ]
-				                        [ geo:lat   "39.53336" ;
-				                          geo:long  "-119.44391"
-				                        ]
-                      				) .
+eis:someMachinePolygon
+        a             ngeo:Polygon ;
+        ngeo:posList  ( [ geo:lat   "39.538175" ;
+                          geo:long  "-119.439914"
+                        ]
+                        [ geo:lat   "39.5381771" ;
+                          geo:long  "-119.4410074"
+                        ]
+                        [ geo:lat   "39.5381771" ;
+                          geo:long  "-119.4410074"
+                        ]
+                        [ geo:lat   "39.5381771" ;
+                          geo:long  "-119.4410074"
+                        ]
+                      ) .
 
-eis:someMachinePolygon a ngeo:Polygon;
-                ngeo:posList (
-                              [geo:lat "39.538175";
-                               geo:long "-119.439914"
-                              ]
-                              [geo:lat "39.5381771";
-                               geo:long "-119.4410074"
-                              ]
-                              [geo:lat "39.5381771";
-                               geo:long "-119.4410074"
-                              ]
-                              [geo:lat "39.5381771";
-                               geo:long "-119.4410074"
-                              ]
-                ).
+dbpedia:Amazon  a         vivo:Company ;
+        rdfs:label        "Amazon.com, Inc." ;
+        eis:hasCEO        dbpedia:Jeff_Bezos ;
+        eis:hasPlant      eis:amazonDEPlant ;
+        eis:headquarters  "Seattle, Washington, U.S." ;
+        eis:wasBuilt      1994 .
+
+eis:amazonDEPlant  a    eis:Plant ;
+        rdfs:label      "Deutschland Amazon Plant" ;
+        eis:hasFactory  eis:leipzigWarehouse , eis:koblenzWarehouse ;
+        eis:manager     dbpedia:ralf_kleber ;
+        eis:workers     10000 .
+
+eis:koblenzPolygon  a  ngeo:Polygon ;
+        ngeo:posList  ( [ geo:lat   "50.345647" ;
+                          geo:long  "7.484006"
+                        ]
+                        [ geo:lat   "50.347072" ;
+                          geo:long  "7.498093"
+                        ]
+                        [ geo:lat   "50.356522" ;
+                          geo:long  "7.486863"
+                        ]
+                        [ geo:lat   "50.351245" ;
+                          geo:long  "7.481421"
+                        ]
+                      ) .
+
+eis:koblenzBuilding  a  eis:Building ;
+        eis:hasPolygon  eis:koblenzBuildingPolygon .
+
+eis:koblenzBuildingPolygon
+        a             ngeo:Polygon ;
+        ngeo:posList  ( [ geo:lat   "50.346331" ;
+                          geo:long  "7.484624"
+                        ]
+                        [ geo:lat   "50.346542" ;
+                          geo:long  "7.491002"
+                        ]
+                        [ geo:lat   "50.348690" ;
+                          geo:long  "7.490516"
+                        ]
+                        [ geo:lat   "50.348304" ;
+                          geo:long  "7.484298"
+                        ]
+                      ) .
+
+eis:leipzigPolygon  a  ngeo:Polygon ;
+        ngeo:posList  ( [ geo:lat   "50.345647" ;
+                          geo:long  "7.484006"
+                        ]
+                        [ geo:lat   "50.347072" ;
+                          geo:long  "7.498093"
+                        ]
+                        [ geo:lat   "50.356522" ;
+                          geo:long  "7.486863"
+                        ]
+                        [ geo:lat   "50.351245" ;
+                          geo:long  "7.481421"
+                        ]
+                      ) .
+
+eis:leipzigBuilding  a  eis:Building ;
+        eis:hasPolygon  eis:leipzigBuildingPolygon .
+
+eis:leipzigBuildingPolygon
+        a             ngeo:Polygon ;
+        ngeo:posList  ( [ geo:lat   "50.346331" ;
+                          geo:long  "7.484624"
+                        ]
+                        [ geo:lat   "50.346542" ;
+                          geo:long  "7.491002"
+                        ]
+                        [ geo:lat   "50.348690" ;
+                          geo:long  "7.490516"
+                        ]
+                        [ geo:lat   "50.348304" ;
+                          geo:long  "7.484298"
+                        ]
+                      ) .
+
+eis:leipzigWarehouse  a  lgdo:Factory ;
+        rdfs:label       "Logistics center Leipzig" ;
+        eis:hasBuilding  eis:leipzigBuilding ;
+        eis:hasPolygon   eis:leipzigPolygon ;
+        eis:wasBuilt     2006 .
+
+eis:koblenzWarehouse  a  lgdo:Factory ;
+        rdfs:label       "Logistikzentrum Koblenz" ;
+        eis:hasBuilding  eis:koblenzBuilding ;
+        eis:hasPolygon   eis:koblenzPolygon ;
+        eis:wasBuilt     2012 .
