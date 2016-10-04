@@ -29,7 +29,7 @@ app.controller('TTLParseTestCtrl', function ($scope, TTLParseService) {
         }).addTo(mymap);
 
         // volkswagenIcon
-        var VolkswagenIcon = L.Icon.extend({
+        var iconHolder = L.Icon.extend({
             options: {
                 iconSize: [30, 30],
                 iconAnchor: [15, 15],
@@ -37,7 +37,9 @@ app.controller('TTLParseTestCtrl', function ($scope, TTLParseService) {
             }
         });
 
-        var vw_icon = new VolkswagenIcon({iconUrl: 'data/vw-logo.png'});
+        //var vw_icon = new iconHolder({iconUrl: 'data/vw-logo.png'});
+        var industry_icon = new iconHolder({iconUrl: 'data/industry.png'});
+        var vw_icon = new iconHolder({iconUrl: 'data/vw-logo.png'});
 
         // todo: loop all companies and pass them to createPopUp function
         // and save popups in respective maps against their key values that will be used later on
@@ -88,7 +90,7 @@ app.controller('TTLParseTestCtrl', function ($scope, TTLParseService) {
                             popupContent += objKeys[propNumber] + ": " + obj[objKeys[propNumber]].value + "</br>";
                         }
                         else if(obj[objKeys[propNumber]].type == "uri") {
-                            popupContent += "<a href=" + obj[objKeys[propNumber]].value + "> " + obj[objKeys[propNumber]].value + " </a></br>";
+                            popupContent += objKeys[propNumber] + ": " + "<a href=" + obj[objKeys[propNumber]].value + "> " + obj[objKeys[propNumber]].value + " </a></br>";
                         }
                     }
                 }
@@ -107,7 +109,7 @@ app.controller('TTLParseTestCtrl', function ($scope, TTLParseService) {
                 {
                     // create marker in this case
                     var point = polygons[0];
-                    var marker = L.marker([parseFloat(point.lat.value), parseFloat(point.long.value)], {icon: vw_icon}).bindPopup(popUpContent);
+                    var marker = L.marker([parseFloat(point.lat.value), parseFloat(point.long.value)], {icon: industry_icon}).bindPopup(popUpContent);
                     marker.addTo(mymap);
                 }
                 else if(obj.polygons.length>1)
@@ -125,7 +127,7 @@ app.controller('TTLParseTestCtrl', function ($scope, TTLParseService) {
 
                     var centerOfPolygon = polygonToAdd.getBounds().getCenter();
 
-                    var companyMarker = L.marker(centerOfPolygon, {icon: vw_icon}).bindPopup(popUpContent);
+                    var companyMarker = L.marker(centerOfPolygon, {icon: industry_icon}).bindPopup(popUpContent);
                     companyMarker.addTo(mymap);
                 }
             }
