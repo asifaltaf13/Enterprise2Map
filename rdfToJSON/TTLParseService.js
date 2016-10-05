@@ -33,12 +33,12 @@ service('TTLParseService',function($q,sparqlQueryService){
         }
 
         var promiseFulfillCount = 0;
-        console.log(promises);
+    //    console.log(promises);
         for(var i =0 ;i<promises.length;i++){
           var currentPromise = promises[i];
           currentPromise.then(function(res){
             promiseFulfillCount++;
-            console.log(promiseFulfillCount);
+            //console.log(promiseFulfillCount);
 
             if(promiseFulfillCount==promises.length){
               parsedData.companies = companies;
@@ -82,10 +82,9 @@ service('TTLParseService',function($q,sparqlQueryService){
       //sparql query to get company factory data
       var fQuery = sparqlQueryService.getFactoryQuery(factoryObject.value);
       //console.log(fQuery);
-
+      var promises = [];
       jQuery.get(endPointURL,{query:fQuery},function(results){
         var plantFactories = [];
-        var polygonQueryPromise;
         for(var i = 0;i<results.results.bindings.length;i++){
           var currentFactory = results.results.bindings[i];
           //console.log(currentFactory);
@@ -94,19 +93,33 @@ service('TTLParseService',function($q,sparqlQueryService){
           var polygonObject = currentFactory.polygon;
 
           if(buildingObject){
-            getBuildingData(currentFactory,buildingObject);
+            var promise = getBuildingData(currentFactory,buildingObject);
+            promises.push(promise);
             delete currentFactory.building;
           }
           if(polygonObject){
-            polygonQueryPromise = getPolygonData(currentFactory,polygonObject);
+            var polygonQueryPromise = getPolygonData(currentFactory,polygonObject);
+            promises.push(polygonQueryPromise);
             delete currentFactory.polygon;
           }
           plantFactories.push(currentFactory);
         }
-        polygonQueryPromise.then(function(resolution){
-          currentPlant.factories = plantFactories;
-          resolve(currentPlant);
-        });
+
+        var promiseFulfillCount = 0;
+        for(var i =0 ;i<promises.length;i++){
+          var currentPromise = promises[i];
+          currentPromise.then(function(res){
+            promiseFulfillCount++;
+
+            if(promiseFulfillCount==promises.length){
+              currentPlant.factories = plantFactories;
+              resolve(currentPlant);
+
+            }
+
+          });
+
+        }//for
       });//jQuery.get
     });//factoryQueryPromise $q
     return factoryQueryPromise;
