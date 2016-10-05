@@ -6,7 +6,7 @@ app.controller('TTLParseTestCtrl', function ($scope, TTLParseService) {
         $scope.parsedTTL = resolution;
 
         //$scope.plotDataOnMap();
-
+        console.log($scope.parsedTTL);
         var normalPopUpMap = {};
         var detailedPopUpMap = {};
 
@@ -138,6 +138,13 @@ app.controller('TTLParseTestCtrl', function ($scope, TTLParseService) {
                 }
             }
 
+            // temporary fix to show building icon in case there is no content in the popup
+            if(popupContent == "")
+            {
+                popupContent = "building </br>";
+            }
+
+            popupContent += " -------------------- </br>"
             popupContent += detailsToAppendToPopUp;
 
             return popupContent;
@@ -148,7 +155,7 @@ app.controller('TTLParseTestCtrl', function ($scope, TTLParseService) {
             if(obj.hasOwnProperty("polygons"))
             {
                 // setting the icon to use
-                var iconToUse;
+                var iconToUse = "notfound" ;
                 var tempString = popUpContent.substring(0, 9);
 
                 var j=0;
@@ -164,7 +171,7 @@ app.controller('TTLParseTestCtrl', function ($scope, TTLParseService) {
                 if(obj.polygons.length==1)
                 {
                     // create marker in this case
-                    var point = polygons[0];
+                    var point = obj.polygons[0];
                     var marker = L.marker([parseFloat(point.lat.value), parseFloat(point.long.value)], {icon: iconToUse}).bindPopup(popUpContent);
                     markersToAdd.push(marker);
                 }
