@@ -139,10 +139,10 @@ app.controller('TTLParseTestCtrl', function ($scope, TTLParseService) {
             }
 
             // temporary fix to show building icon in case there is no content in the popup
-            // if(popupContent == "")
-            // {
-            //     popupContent = "building </br>";
-            // }
+            if(popupContent == "")
+            {
+                popupContent = "No further details about the item. </br>";
+            }
 
             popupContent += " -------------------- </br>"
             popupContent += detailsToAppendToPopUp;
@@ -155,7 +155,8 @@ app.controller('TTLParseTestCtrl', function ($scope, TTLParseService) {
             if(obj.hasOwnProperty("polygons"))
             {
                 // setting the icon to use
-                var iconToUse = new iconHolder({iconUrl: 'data/'+"notfound"+'.png'}); ;
+                var iconToUse = new iconHolder({iconUrl: 'data/'+"notfound"+'.png', iconSize: [12,12]});
+                var iconSet = false;
                 var tempString = popUpContent.substring(0, 9);
 
                 var j=0;
@@ -164,6 +165,7 @@ app.controller('TTLParseTestCtrl', function ($scope, TTLParseService) {
                     if(tempString.indexOf(iconNames[j]) != -1)
                     {
                         iconToUse = new iconHolder({iconUrl: 'data/'+iconNames[j]+'.png'});
+                        iconSet = true;
                         break;
                     }
                 }
