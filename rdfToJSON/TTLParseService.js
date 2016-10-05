@@ -8,32 +8,46 @@ service('TTLParseService',function($q,sparqlQueryService){
     var mainPromise = $q(function(mainResolve,mainReject){
 
       var parsedData = {};
-      //console.log("parsed data: ");
-      //console.log(parsedData);
+      console.log("parsed data: ");
+      console.log(parsedData);
       endPointURL = baseURL+endPointName;
 
+      var promises = [];
       //sparql query to get the company info
       var companyQuery = sparqlQueryService.getCompanyQuery();
-    //  console.log(companyQuery);
+      //console.log(companyQuery);
       jQuery.get(endPointURL,{query:companyQuery},function(results){
         var companies = [];
-        var plantQueryPromise;
-    //    console.log(results);
+        //    console.log(results);
         for(var i = 0;i<results.results.bindings.length;i++){
           var currentCompany = results.results.bindings[i];
+          //console.log(results);
           var plantObject = currentCompany.companyPlant;
           if(plantObject){
-            plantQueryPromise  = getPlantData(currentCompany,plantObject);
+            var plantQueryPromise  = getPlantData(currentCompany,plantObject);
+            promises.push(plantQueryPromise);
             delete currentCompany.companyPlant;
           }
           delete currentCompany.subject;
           companies.push(currentCompany);
         }
 
-        plantQueryPromise.then(function(resCompany){
-          parsedData.companies = companies;
-          mainResolve(parsedData);
-        });
+        var promiseFulfillCount = 0;
+        console.log(promises);
+        for(var i =0 ;i<promises.length;i++){
+          var currentPromise = promises[i];
+          currentPromise.then(function(res){
+            promiseFulfillCount++;
+            console.log(promiseFulfillCount);
+
+            if(promiseFulfillCount==promises.length){
+              parsedData.companies = companies;
+              console.log(parsedData);
+              mainResolve(parsedData);
+            }
+          });
+        }//for
+
       });
     });//$q
     return mainPromise;
@@ -68,6 +82,7 @@ service('TTLParseService',function($q,sparqlQueryService){
       //sparql query to get company factory data
       var fQuery = sparqlQueryService.getFactoryQuery(factoryObject.value);
       //console.log(fQuery);
+
       jQuery.get(endPointURL,{query:fQuery},function(results){
         var plantFactories = [];
         var polygonQueryPromise;
@@ -108,9 +123,9 @@ service('TTLParseService',function($q,sparqlQueryService){
 
           var machineObject = currentBuilding.machine;
           var polygonObject = currentBuilding.polygon;
-
+          //console.log(currentBuilding);
           if(machineObject){
-             getMachineData(currentBuilding,machineObject);
+            getMachineData(currentBuilding,machineObject);
             delete currentBuilding.machine;
           }
 
@@ -167,48 +182,57 @@ service('TTLParseService',function($q,sparqlQueryService){
     var plantQueryPromise = $q(function(resolve,reject){
       //sparql query to get company plant data
       var pQuery = sparqlQueryService.getPlantQuery(plantObject.value);
-      console.log(pQuery);
+      //console.log(pQuery);
+      var promises = [];
       jQuery.get(endPointURL,{query:pQuery},function(results){
         var companyPlants = [];
-        var factoryQueryPromise;
         for(var i = 0;i<results.results.bindings.length;i++){
           var currentPlant = results.results.bindings[i];
-
+          //console.log(results);
           var factoryObject = currentPlant.plantFactory;
           if(factoryObject){
-            factoryQueryPromise = getFactoryData(currentPlant,factoryObject);
+            var factoryQueryPromise = getFactoryData(currentPlant,factoryObject);
+            promises.push(factoryQueryPromise);
             delete currentPlant.plantFactory;
           }
 
           companyPlants.push(currentPlant);
         }
 
-        factoryQueryPromise.then(function(resolution){
-          var plantsToRemove = [];
-          for(var i=0; i<companyPlants.length;i++){
-            var currentPlant = companyPlants[i];
-            for(var j=i+1;j<companyPlants.length;j++){
-              var otherPlant = companyPlants[j];
-              if(!plantsToRemove.includes(otherPlant)){
-
-                if(currentPlant.plantName.value==otherPlant.plantName.value){
-                  for(var k=0;k<otherPlant.factories.length;k++){
-                    currentPlant.factories.push(otherPlant.factories[k]);
-                  }
-                  plantsToRemove.push(j);
-                }
+        var promiseFulfillCount = 0;
+        for(var i =0 ;i<promises.length;i++){
+          var currentPromise = promises[i];
+          currentPromise.then(function(res){
+            promiseFulfillCount++;
+            if(promiseFulfillCount==promises.length){
+              var plantsToRemove = [];
+              for(var i=0; i<companyPlants.length;i++){
+                var currentPlant = companyPlants[i];
+                for(var j=i+1;j<companyPlants.length;j++){
+                  var otherPlant = companyPlants[j];
+                  if(!plantsToRemove.includes(otherPlant)){
+                    //console.log(currentPlant);
+                    if(currentPlant.plantName.value==otherPlant.plantName.value){
+                      for(var k=0;k<otherPlant.factories.length;k++){
+                        currentPlant.factories.push(otherPlant.factories[k]);
+                      }//for
+                      plantsToRemove.push(j);
+                    }//if
+                  }//if
+                }//for
+              }//for
+              for(var i =0;i<plantsToRemove.length;i++){
+                companyPlants.splice(plantsToRemove[i],1);
               }
-            }
-          }
-          for(var i =0;i<plantsToRemove.length;i++){
-            companyPlants.splice(plantsToRemove[i],1);
-          }
-          currentCompany.plants = companyPlants;
-          resolve(currentCompany);
-        });
-      });//jQuery.get
-    });//$q
-    return plantQueryPromise;
-  }//getPlantData
+              currentCompany.plants = companyPlants;
+              resolve(currentCompany);
+            }//if
+          });//then
+        }//for
+
+    });//jQuery.get
+  });//$q
+  return plantQueryPromise;
+}//getPlantData
 
 });//service
