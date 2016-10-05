@@ -95,13 +95,20 @@ app.controller('TTLParseTestCtrl', function ($scope, TTLParseService) {
 
             // check in case it has more arrays, process them too
             var objKeys = Object.keys(obj);
-            for(keyNumber=0; keyNumber < objKeys.length; keyNumber++)
+            if(obj.hasOwnProperty("polygons") && objKeys.length==1)
             {
-                keyValue = objKeys[keyNumber];
-                subObj = obj[keyValue];
-                if(keyValue!="polygons" && subObj instanceof Array)
+                // ignore in this case
+            }
+            else
+            {
+                for(keyNumber=0; keyNumber < objKeys.length; keyNumber++)
                 {
-                    processObjectsArray(subObj, popUpContent);
+                    keyValue = objKeys[keyNumber];
+                    subObj = obj[keyValue];
+                    if(keyValue!="polygons" && subObj instanceof Array)
+                    {
+                        processObjectsArray(subObj, popUpContent);
+                    }
                 }
             }
         }
