@@ -42,7 +42,7 @@ service('TTLParseService',function($q,sparqlQueryService){
 
             if(promiseFulfillCount==promises.length){
               parsedData.companies = companies;
-              console.log(parsedData);
+              //console.log(parsedData);
               mainResolve(parsedData);
             }
           });
@@ -114,7 +114,6 @@ service('TTLParseService',function($q,sparqlQueryService){
             if(promiseFulfillCount==promises.length){
               currentPlant.factories = plantFactories;
               resolve(currentPlant);
-
             }
 
           });
@@ -130,7 +129,7 @@ service('TTLParseService',function($q,sparqlQueryService){
       var bQuery = sparqlQueryService.getBuildingQuery(buildingObject.value);
       jQuery.get(endPointURL,{query:bQuery},function(results){
         var buildings = [];
-        var queryPromise;
+        var promises = [];
         for(var i = 0;i<results.results.bindings.length;i++){
           var currentBuilding = results.results.bindings[i];
 
@@ -138,22 +137,36 @@ service('TTLParseService',function($q,sparqlQueryService){
           var polygonObject = currentBuilding.polygon;
           //console.log(currentBuilding);
           if(machineObject){
-            getMachineData(currentBuilding,machineObject);
+            var promise = getMachineData(currentBuilding,machineObject);
+            promises.push(promise);
             delete currentBuilding.machine;
           }
 
           if(polygonObject){
-            queryPromise = getPolygonData(currentBuilding,polygonObject);
+            var queryPromise = getPolygonData(currentBuilding,polygonObject);
+            promises.push(queryPromise);
             delete currentBuilding.polygon;
           }
 
           buildings.push(currentBuilding);
         }
 
-        queryPromise.then(function(resolution){
-          parentObject.buildings = buildings;
-          resolve(parentObject);
-        });
+        var promiseFulfillCount = 0;
+    //    console.log(promises);
+        for(var i =0 ;i<promises.length;i++){
+          var currentPromise = promises[i];
+          currentPromise.then(function(res){
+            promiseFulfillCount++;
+            //console.log(promiseFulfillCount);
+
+            if(promiseFulfillCount==promises.length){
+              //console.log(promises);
+              parentObject.buildings = buildings;
+              resolve(parentObject);
+
+            }
+          });
+        }//for
 
       });//jQuery.get
     });//$q
@@ -166,25 +179,35 @@ service('TTLParseService',function($q,sparqlQueryService){
       var mQuery = sparqlQueryService.getMachineQuery(machineObject.value);
       jQuery.get(endPointURL,{query:mQuery},function(results){
         var machines = [];
-        var machinePolygonPromise;
+        var promises = [];
         for(var i = 0;i<results.results.bindings.length;i++){
           var currentMachine = results.results.bindings[i];
 
           var polygonObject = currentMachine.polygon;
 
           if(polygonObject){
-            machinePolygonPromise = getPolygonData(currentMachine,polygonObject);
+            var machinePolygonPromise = getPolygonData(currentMachine,polygonObject);
+            promises.push(machinePolygonPromise);
             delete currentMachine.polygon;
           }
 
           machines.push(currentMachine);
 
         }
-        machinePolygonPromise.then(function(resolution){
-          parentObject.machines = machines;
-          resolve(parentObject);
-        });
 
+        var promiseFulfillCount = 0;
+    //    console.log(promises);
+        for(var i =0 ;i<promises.length;i++){
+          var currentPromise = promises[i];
+          currentPromise.then(function(res){
+            promiseFulfillCount++;
+            if(promiseFulfillCount==promises.length){
+              parentObject.machines = machines;
+              resolve(parentObject);
+
+            }
+          });
+        }//for
       });//jQuery.get
     });//$q
     return machineQueryPromise;
