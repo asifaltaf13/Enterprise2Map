@@ -39,8 +39,27 @@ service('TTLParseService',function($q,sparqlQueryService){
           currentPromise.then(function(res){
             promiseFulfillCount++;
             //console.log(promiseFulfillCount);
-
+            //console.log(promiseFulfillCount+"...."+promises.length);
             if(promiseFulfillCount==promises.length){
+              var companiesToRemove = [];
+              for(var i=0; i<companies.length;i++){
+                var currentCompany = companies[i];
+                for(var j=i+1;j<companies.length;j++){
+                  var otherCompany = companies[j];
+                  if(!companiesToRemove.includes(otherCompany)){
+                    //console.log(currentPlant);
+                    if(currentCompany.companyName.value==otherCompany.companyName.value){
+                      for(var k=0;k<otherCompany.plants.length;k++){
+                        currentCompany.plants.push(otherCompany.plants[k]);
+                      }//for
+                      companiesToRemove.push(j);
+                    }//if
+                  }//if
+                }//for
+              }//for
+              for(var i =0;i<companiesToRemove.length;i++){
+                companies.splice(companiesToRemove[i],1);
+              }
               parsedData.companies = companies;
               //console.log(parsedData);
               mainResolve(parsedData);
@@ -224,7 +243,7 @@ service('TTLParseService',function($q,sparqlQueryService){
         var companyPlants = [];
         for(var i = 0;i<results.results.bindings.length;i++){
           var currentPlant = results.results.bindings[i];
-          //console.log(results);
+          console.log(results);
           var factoryObject = currentPlant.plantFactory;
           if(factoryObject){
             var factoryQueryPromise = getFactoryData(currentPlant,factoryObject);
@@ -234,7 +253,7 @@ service('TTLParseService',function($q,sparqlQueryService){
 
           companyPlants.push(currentPlant);
         }
-
+        console.log("next");
         var promiseFulfillCount = 0;
         for(var i =0 ;i<promises.length;i++){
           var currentPromise = promises[i];
