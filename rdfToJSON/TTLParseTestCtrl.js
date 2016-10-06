@@ -1,4 +1,34 @@
+var mymap;
+
+var markers;
+
+var polygonsToAdd = [];
+var markersToAdd = [];
+
 var app = angular.module('Enterprise2MapApp');
+function showAllElementsOnMap() {
+    // show items on map
+    var looper=0;
+    for(; looper<polygonsToAdd.length; looper++)
+    {
+        polygonsToAdd[looper].addTo(mymap);
+    }
+
+    // looper=0;
+    // for(; looper<markersToAdd.length; looper++)
+    // {
+    //     markersToAdd[looper].addTo(mymap);
+    // }
+
+    mymap.addLayer(markers);
+}
+
+function removeAllElementsFromMap() {
+    // show items on map
+
+    mymap.removeLayer(markers);
+}
+
 app.controller('TTLParseTestCtrl', function ($scope, TTLParseService) {
     $scope.parsedTTL = "";
     var promise = TTLParseService.parseTTL('Factory');
@@ -20,7 +50,8 @@ app.controller('TTLParseTestCtrl', function ($scope, TTLParseService) {
 
     $scope.generateMapAnnotations = function (normalPopUpMap, detailedPopUpMap)
     {
-        var mymap = L.map('map', {}).setView([-0.515278, 47.501111], 2);
+        mymap = L.map('map', {}).setView([-0.515278, 47.501111], 2);
+        markers = new L.FeatureGroup();
 
         L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiczZhc2FsdGEiLCJhIjoiY2lveXUwb3dqMDBlaXZ2bHdoZjQ5dHlrbiJ9.xKMDfR_36OSyxiBT_jftig', {
             maxZoom: 18,
@@ -51,9 +82,6 @@ app.controller('TTLParseTestCtrl', function ($scope, TTLParseService) {
         // todo: loop all companies and pass them to createPopUp function
         // and save popups in respective maps against their key values that will be used later on
 
-        var polygonsToAdd = [];
-        var markersToAdd = [];
-
         var comps = [];
         comps = $scope.parsedTTL.companies;
 
@@ -64,18 +92,7 @@ app.controller('TTLParseTestCtrl', function ($scope, TTLParseService) {
         }
 
         // show items on map
-        var looper=0;
-        for(; looper<polygonsToAdd.length; looper++)
-        {
-            polygonsToAdd[looper].addTo(mymap);
-        }
-
-        looper=0;
-        for(; looper<markersToAdd.length; looper++)
-        {
-            markersToAdd[looper].addTo(mymap);
-        }
-
+        showAllElementsOnMap();
 
         function processObjectsArray(objArray, detailsToAppendToPopUp)
         {
@@ -179,7 +196,8 @@ app.controller('TTLParseTestCtrl', function ($scope, TTLParseService) {
                     // create marker in this case
                     var point = obj.polygons[0];
                     var marker = L.marker([parseFloat(point.lat.value), parseFloat(point.long.value)], {icon: iconToUse}).bindPopup(popUpContent);
-                    markersToAdd.push(marker);
+                    //markersToAdd.push(marker);
+                    markers.addLayer(marker);
                 }
                 else if(obj.polygons.length>1)
                 {
@@ -198,7 +216,8 @@ app.controller('TTLParseTestCtrl', function ($scope, TTLParseService) {
                     var centerOfPolygon = polygonToAdd.getBounds().getCenter();
 
                     var companyMarker = L.marker(centerOfPolygon, {icon: iconToUse}).bindPopup(popUpContent);
-                    markersToAdd.push(companyMarker);
+                    //markersToAdd.push(companyMarker);
+                    markers.addLayer(companyMarker);
                 }
             }
         }
