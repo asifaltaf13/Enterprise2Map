@@ -65,12 +65,13 @@ app.controller('TTLParseTestCtrl', function ($scope, TTLParseService) {
 
         // show items on map
         var looper=0;
-        for(looper=0; looper<polygonsToAdd.length; looper++)
+        for(; looper<polygonsToAdd.length; looper++)
         {
             polygonsToAdd[looper].addTo(mymap);
         }
 
-        for(looper=0; looper<markersToAdd.length; looper++)
+        looper=0;
+        for(; looper<markersToAdd.length; looper++)
         {
             markersToAdd[looper].addTo(mymap);
         }
@@ -78,7 +79,8 @@ app.controller('TTLParseTestCtrl', function ($scope, TTLParseService) {
 
         function processObjectsArray(objArray, detailsToAppendToPopUp)
         {
-            for (objNumber = 0; objNumber < objArray.length; objNumber++)
+            var objNumber = 0;
+            for (; objNumber < objArray.length; objNumber++)
             {
                 var obj = objArray[objNumber];
                 processObject(obj, detailsToAppendToPopUp);
@@ -101,7 +103,8 @@ app.controller('TTLParseTestCtrl', function ($scope, TTLParseService) {
             }
             else
             {
-                for(keyNumber=0; keyNumber < objKeys.length; keyNumber++)
+                var keyNumber=0;
+                for(; keyNumber < objKeys.length; keyNumber++)
                 {
                     keyValue = objKeys[keyNumber];
                     subObj = obj[keyValue];
@@ -121,7 +124,8 @@ app.controller('TTLParseTestCtrl', function ($scope, TTLParseService) {
             if(typeof(obj) == "object")
             {
                 objKeys = Object.keys(obj);
-                for(propNumber=0; propNumber<objKeys.length; propNumber++)
+                var propNumber=0;
+                for(; propNumber<objKeys.length; propNumber++)
                 {
                     if(typeof(obj[objKeys[propNumber]]) == "object"
                         && !(typeof(obj[objKeys[propNumber]]) instanceof Array)
@@ -181,7 +185,8 @@ app.controller('TTLParseTestCtrl', function ($scope, TTLParseService) {
                 {
                     // create polygon in this case and a marker in the middle
                     var polygonPointsArray = [];
-                    for(pointNumber=0; pointNumber<obj.polygons.length; pointNumber++)
+                    var pointNumber=0;
+                    for(; pointNumber<obj.polygons.length; pointNumber++)
                     {
                         point = obj.polygons[pointNumber];
                         polygonPointsArray.push([parseFloat(point.lat.value), parseFloat(point.long.value)])
@@ -212,13 +217,17 @@ app.controller('TTLParseTestCtrl', function ($scope, TTLParseService) {
         var polygonsPoints = [];
 
         // loop on the object, get the values and create objects to show on map
-        for (comp = 0; comp < companies.length; comp++) {
+        var comp = 0;
+        for (; comp < companies.length; comp++) {
             var company = companies[comp];
             var polygonPointsArray = [];
             polygonsPoints.push(polygonPointsArray);
-            for (plan = 0; plan < company.plants.length; plan++) {
-                for (fact = 0; fact < company.plants[plan].factories.length; fact++) {
-                    for (poly = 0; poly < company.plants[plan].factories[fact].polygons.length; poly++) {
+            var plan = 0;
+            for (; plan < company.plants.length; plan++) {
+                var fact = 0;
+                for (; fact < company.plants[plan].factories.length; fact++) {
+                    var poly = 0;
+                    for (; poly < company.plants[plan].factories[fact].polygons.length; poly++) {
                         var polygon = company.plants[plan].factories[fact].polygons[poly];
                         var marker = L.marker([parseFloat(polygon.lat.value), parseFloat(polygon.long.value)], {icon: vw_icon});
                         polygonPointsArray.push([parseFloat(polygon.lat.value), parseFloat(polygon.long.value)])
