@@ -243,7 +243,7 @@ service('TTLParseService',function($q,sparqlQueryService){
         var companyPlants = [];
         for(var i = 0;i<results.results.bindings.length;i++){
           var currentPlant = results.results.bindings[i];
-          console.log(results);
+        // console.log(results);
           var factoryObject = currentPlant.plantFactory;
           if(factoryObject){
             var factoryQueryPromise = getFactoryData(currentPlant,factoryObject);
@@ -253,7 +253,7 @@ service('TTLParseService',function($q,sparqlQueryService){
 
           companyPlants.push(currentPlant);
         }
-        console.log("next");
+        //console.log("next");
         var promiseFulfillCount = 0;
         for(var i =0 ;i<promises.length;i++){
           var currentPromise = promises[i];
