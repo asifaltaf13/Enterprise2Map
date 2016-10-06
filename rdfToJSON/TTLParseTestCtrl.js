@@ -1,32 +1,199 @@
+// properties
+
 var mymap;
 
-var markers;
+var markersToAdd;
+var polygonsToAdd;
 
-var polygonsToAdd = [];
-var markersToAdd = [];
+var markersCount = 0;
+var polygonsCount = 0;
+
+// companies data
+var comps = [];
+
+var iconHolder;
+var iconNames = [];
+
+var filterMap = ["company", "factory", "building", "machine", "No"];
 
 var app = angular.module('Enterprise2MapApp');
-function showAllElementsOnMap() {
-    // show items on map
-    var looper=0;
-    for(; looper<polygonsToAdd.length; looper++)
+
+
+
+// methods
+
+function processObjectsArray(objArray, detailsToAppendToPopUp, filterType)
+{
+    var objNumber = 0;
+    for (; objNumber < objArray.length; objNumber++)
     {
-        polygonsToAdd[looper].addTo(mymap);
+        var obj = objArray[objNumber];
+        processObject(obj, detailsToAppendToPopUp, filterType);
+    }
+}
+
+function processObject(obj, detailsToAppendToPopUp, filterType)
+{
+    // create its own popUp
+    var popUpContent = createPopUp(obj, detailsToAppendToPopUp);
+
+    // create its Annotation if required
+    createAnnotation(obj, popUpContent, filterType);
+
+    // check in case it has more arrays, process them too
+    var objKeys = Object.keys(obj);
+    if(obj.hasOwnProperty("polygons") && objKeys.length==1)
+    {
+        // ignore in this case
+    }
+    else
+    {
+        var keyNumber=0;
+        for(; keyNumber < objKeys.length; keyNumber++)
+        {
+            var keyValue = objKeys[keyNumber];
+            var subObj = obj[keyValue];
+            if(keyValue!="polygons" && subObj instanceof Array)
+            {
+                processObjectsArray(subObj, popUpContent, filterType);
+            }
+        }
+    }
+}
+
+function createPopUp(obj, detailsToAppendToPopUp)
+{
+    var popupContent = "";
+
+    if(typeof(obj) == "object")
+    {
+        objKeys = Object.keys(obj);
+        var propNumber=0;
+        for(; propNumber<objKeys.length; propNumber++)
+        {
+            if(typeof(obj[objKeys[propNumber]]) == "object"
+                && !(typeof(obj[objKeys[propNumber]]) instanceof Array)
+                && objKeys[propNumber] != "polygons"
+                && objKeys[propNumber] != "subject")
+            {
+                if(obj[objKeys[propNumber]].type == "literal") {
+                    popupContent += objKeys[propNumber] + ": " + obj[objKeys[propNumber]].value + "</br>";
+                }
+                else if(obj[objKeys[propNumber]].type == "uri") {
+                    popupContent += objKeys[propNumber] + ": " + "<a href=" + obj[objKeys[propNumber]].value + "> " + obj[objKeys[propNumber]].value + " </a></br>";
+                }
+            }
+        }
     }
 
-    // looper=0;
-    // for(; looper<markersToAdd.length; looper++)
-    // {
-    //     markersToAdd[looper].addTo(mymap);
-    // }
+    // temporary fix to show building icon in case there is no content in the popup
+    if(popupContent == "")
+    {
+        popupContent = "No further details about the item. </br>";
+    }
 
-    mymap.addLayer(markers);
+    popupContent += " -------------------- </br>"
+    popupContent += detailsToAppendToPopUp;
+
+    return popupContent;
+}
+
+function createAnnotation(obj, popUpContent, filterType)
+{
+    if(obj.hasOwnProperty("polygons"))
+    {
+        // setting the icon to use
+        var iconToUse = new iconHolder({iconUrl: 'data/'+"notfound"+'.png', iconSize: [12,12]});
+        var iconSet = false;
+        var tempString = popUpContent.substring(0, 9);
+
+        var j=0;
+        for(; j<iconNames.length; j++)
+        {
+            if(tempString.indexOf(iconNames[j]) != -1)
+            {
+                iconToUse = new iconHolder({iconUrl: 'data/'+iconNames[j]+'.png'});
+
+                break;
+            }
+        }
+
+        if(obj.polygons.length==1)
+        {
+            // create marker in this case
+            var point = obj.polygons[0];
+            var marker = L.marker([parseFloat(point.lat.value), parseFloat(point.long.value)], {icon: iconToUse}).bindPopup(popUpContent);
+            if(filterType=="" || tempString.indexOf(filterType) != -1)
+            {
+                markersToAdd.addLayer(marker);
+                markersCount +=1;
+            }
+        }
+        else if(obj.polygons.length>1)
+        {
+            // create polygon in this case and a marker in the middle
+            var polygonPointsArray = [];
+            var pointNumber=0;
+            for(; pointNumber<obj.polygons.length; pointNumber++)
+            {
+                point = obj.polygons[pointNumber];
+                polygonPointsArray.push([parseFloat(point.lat.value), parseFloat(point.long.value)])
+            }
+
+            var polygonToAdd = L.polygon(polygonPointsArray).bindPopup(popUpContent);
+            if(filterType=="" || tempString.indexOf(filterType) != -1) {
+                polygonsToAdd.addLayer(polygonToAdd);
+                polygonsCount += 1;
+            }
+
+            var centerOfPolygon = polygonToAdd.getBounds().getCenter();
+
+            var companyMarker = L.marker(centerOfPolygon, {icon: iconToUse}).bindPopup(popUpContent);
+            if(filterType=="" || tempString.indexOf(filterType) != -1) {
+                markersToAdd.addLayer(companyMarker);
+                markersCount += 1;
+            }
+        }
+    }
+}
+
+
+
+function showAllElementsOnMap() {
+    mymap.addLayer(polygonsToAdd);
+    mymap.addLayer(markersToAdd);
 }
 
 function removeAllElementsFromMap() {
     // show items on map
 
-    mymap.removeLayer(markers);
+    mymap.removeLayer(markersToAdd);
+    mymap.removeLayer(polygonsToAdd);
+    markersCount = 0;
+    polygonsCount = 0;
+}
+
+function processEverything(filterNumber)
+{
+    if(markersToAdd!=null && polygonsToAdd!=null)
+        removeAllElementsFromMap();
+
+    markersToAdd = new L.FeatureGroup();
+    polygonsToAdd = new L.FeatureGroup();
+    markersCount = 0;
+    polygonsCount = 0;
+
+    var filterType = filterMap[filterNumber];
+    if(filterType == null)
+        filterType = "";
+    var i=0;
+    for(; i<comps.length; i++)
+    {
+        processObject(comps[i], "", filterType);
+    }
+
+    // show items on map
+    showAllElementsOnMap();
 }
 
 app.controller('TTLParseTestCtrl', function ($scope, TTLParseService) {
@@ -51,7 +218,6 @@ app.controller('TTLParseTestCtrl', function ($scope, TTLParseService) {
     $scope.generateMapAnnotations = function (normalPopUpMap, detailedPopUpMap)
     {
         mymap = L.map('map', {}).setView([-0.515278, 47.501111], 2);
-        markers = new L.FeatureGroup();
 
         L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiczZhc2FsdGEiLCJhIjoiY2lveXUwb3dqMDBlaXZ2bHdoZjQ5dHlrbiJ9.xKMDfR_36OSyxiBT_jftig', {
             maxZoom: 18,
@@ -60,7 +226,7 @@ app.controller('TTLParseTestCtrl', function ($scope, TTLParseService) {
         }).addTo(mymap);
 
         // volkswagenIcon
-        var iconHolder = L.Icon.extend({
+          iconHolder = L.Icon.extend({
             options: {
                 iconSize: [30, 30],
                 iconAnchor: [15, 15],
@@ -70,7 +236,6 @@ app.controller('TTLParseTestCtrl', function ($scope, TTLParseService) {
 
         //var vw_icon = new iconHolder({iconUrl: 'data/vw-logo.png'});
 
-        var iconNames = [];
         iconNames.push("company");
         iconNames.push("factory");
         iconNames.push("industry");
@@ -82,149 +247,12 @@ app.controller('TTLParseTestCtrl', function ($scope, TTLParseService) {
         // todo: loop all companies and pass them to createPopUp function
         // and save popups in respective maps against their key values that will be used later on
 
-        var comps = [];
         comps = $scope.parsedTTL.companies;
 
-        var i=0;
-        for(; i<comps.length; i++)
-        {
-            processObject(comps[i], "");
-        }
-
-        // show items on map
-        showAllElementsOnMap();
-
-        function processObjectsArray(objArray, detailsToAppendToPopUp)
-        {
-            var objNumber = 0;
-            for (; objNumber < objArray.length; objNumber++)
-            {
-                var obj = objArray[objNumber];
-                processObject(obj, detailsToAppendToPopUp);
-            }
-        }
-
-        function processObject(obj, detailsToAppendToPopUp)
-        {
-            // create its own popUp
-            var popUpContent = createPopUp(obj, detailsToAppendToPopUp);
-
-            // create its Annotation if required
-            createAnnotation(obj, popUpContent);
-
-            // check in case it has more arrays, process them too
-            var objKeys = Object.keys(obj);
-            if(obj.hasOwnProperty("polygons") && objKeys.length==1)
-            {
-                // ignore in this case
-            }
-            else
-            {
-                var keyNumber=0;
-                for(; keyNumber < objKeys.length; keyNumber++)
-                {
-                    keyValue = objKeys[keyNumber];
-                    subObj = obj[keyValue];
-                    if(keyValue!="polygons" && subObj instanceof Array)
-                    {
-                        processObjectsArray(subObj, popUpContent);
-                    }
-                }
-            }
-        }
-
-        function createPopUp(obj, detailsToAppendToPopUp)
-        {
-            var popupContent = "";
-
-            //if(typeof(obj) == "object" && obj.hasOwnProperty("polygons"))
-            if(typeof(obj) == "object")
-            {
-                objKeys = Object.keys(obj);
-                var propNumber=0;
-                for(; propNumber<objKeys.length; propNumber++)
-                {
-                    if(typeof(obj[objKeys[propNumber]]) == "object"
-                        && !(typeof(obj[objKeys[propNumber]]) instanceof Array)
-                        && objKeys[propNumber] != "polygons"
-                        && objKeys[propNumber] != "subject")
-                    {
-                        if(obj[objKeys[propNumber]].type == "literal") {
-                            popupContent += objKeys[propNumber] + ": " + obj[objKeys[propNumber]].value + "</br>";
-                        }
-                        else if(obj[objKeys[propNumber]].type == "uri") {
-                            popupContent += objKeys[propNumber] + ": " + "<a href=" + obj[objKeys[propNumber]].value + "> " + obj[objKeys[propNumber]].value + " </a></br>";
-                        }
-                    }
-                }
-            }
-
-            // temporary fix to show building icon in case there is no content in the popup
-            if(popupContent == "")
-            {
-                popupContent = "No further details about the item. </br>";
-            }
-
-            popupContent += " -------------------- </br>"
-            popupContent += detailsToAppendToPopUp;
-
-            return popupContent;
-        }
-
-        function createAnnotation(obj, popUpContent)
-        {
-            if(obj.hasOwnProperty("polygons"))
-            {
-                // setting the icon to use
-                var iconToUse = new iconHolder({iconUrl: 'data/'+"notfound"+'.png', iconSize: [12,12]});
-                var iconSet = false;
-                var tempString = popUpContent.substring(0, 9);
-
-                var j=0;
-                for(; j<iconNames.length; j++)
-                {
-                    if(tempString.indexOf(iconNames[j]) != -1)
-                    {
-                        iconToUse = new iconHolder({iconUrl: 'data/'+iconNames[j]+'.png'});
-                        iconSet = true;
-                        break;
-                    }
-                }
-
-                if(obj.polygons.length==1)
-                {
-                    // create marker in this case
-                    var point = obj.polygons[0];
-                    var marker = L.marker([parseFloat(point.lat.value), parseFloat(point.long.value)], {icon: iconToUse}).bindPopup(popUpContent);
-                    //markersToAdd.push(marker);
-                    markers.addLayer(marker);
-                }
-                else if(obj.polygons.length>1)
-                {
-                    // create polygon in this case and a marker in the middle
-                    var polygonPointsArray = [];
-                    var pointNumber=0;
-                    for(; pointNumber<obj.polygons.length; pointNumber++)
-                    {
-                        point = obj.polygons[pointNumber];
-                        polygonPointsArray.push([parseFloat(point.lat.value), parseFloat(point.long.value)])
-                    }
-
-                    var polygonToAdd = L.polygon(polygonPointsArray).bindPopup(popUpContent);
-                    polygonsToAdd.push(polygonToAdd);
-
-                    var centerOfPolygon = polygonToAdd.getBounds().getCenter();
-
-                    var companyMarker = L.marker(centerOfPolygon, {icon: iconToUse}).bindPopup(popUpContent);
-                    //markersToAdd.push(companyMarker);
-                    markers.addLayer(companyMarker);
-                }
-            }
-        }
+        // process all companies
+        var filterType = ""
+        processEverything(filterType);
     }
-
-
-
 
     $scope.plotDataOnMap = function () {
         console.log($scope.parsedTTL);
@@ -267,13 +295,13 @@ app.controller('TTLParseTestCtrl', function ($scope, TTLParseService) {
             id: 'mapbox.streets'
         }).addTo(mymap);
 
-        // add the markers to the mapview
+        // add the markersToAdd to the mapview
         for (i = 0; i < markers.length; i++) {
-            //markers[i].addTo(mymap);
-            //markers[i].openPopup();
+            //markersToAdd[i].addTo(mymap);
+            //markersToAdd[i].openPopup();
         }
 
-        // add polygons to the mapview
+        // add polygonsToAdd to the mapview
         for (i = 0; i < polygonsPoints.length; i++) {
             var company = companies[i];
 
