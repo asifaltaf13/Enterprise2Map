@@ -17,6 +17,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.0.0.min.js"
             integrity="sha256-JmvOoLtYsmqlsWxa7mDSLMwa6dZ9rrIdtrrVYRnDRH0=" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="app.js"></script>
     <script src="js/sidenav.js"></script>
     <script src="js/filtering.js"></script>
@@ -24,6 +25,11 @@
     <script src="TTLParseService.js"></script>
     <script src="TTLParseTestCtrl.js"></script>
     <script src="rdfstore.js"></script>
+    <script src="js/geocoder.js"></script>
+
+    <!--<script async defer-->
+            <!--src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCmsQe9kzGmubcKX3X3SNKIWgLuCujONB4">-->
+    <!--</script>-->
 </head>
 
 <body ng-controller="TTLParseTestCtrl" class="disable-select">
@@ -32,13 +38,21 @@
     <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
 
     <div style="padding-left: 30px">
-        <input type="checkbox"  id="enable" name="vehicle" value="Company" onclick="enableFilter()">Enable Filtering<br>
+        <input type="checkbox"  id="enable" name="vehicle" value="Company" onclick="enableFilter()"> Filter by Features<br>
         <div style="padding-left: 30px">
-            <input type="radio" name="filterType"  id="Company" value="Company" onclick="processEverything(0)" disabled="true" style="padding-left: 15px"> Company<br>
-            <input type="radio" name="filterType"  id="Factory" value="Factory" onclick="processEverything(1)" disabled="true" style="padding-left: 15px"> Factory<br>
-            <input type="radio" name="filterType"  id="Building" value="Building" onclick="processEverything(2)" disabled="true" style="padding-left: 15px"> Building<br>
-            <input type="radio" name="filterType"  id="Machine" value="Building" onclick="processEverything(3)" disabled="true" style="padding-left: 15px"> Machine<br>
-            <input type="radio" name="filterType"  id="Others" value="Others" onclick="processEverything(4)" disabled="true" style="padding-left: 15px"> Others<br>
+            <input type="radio" name="filterType"  id="Company" value="Company" onclick="processEverything(0, 0)" disabled="true" style="padding-left: 15px"> Company<br>
+            <input type="radio" name="filterType"  id="Factory" value="Factory" onclick="processEverything(0, 1)" disabled="true" style="padding-left: 15px"> Factory<br>
+            <input type="radio" name="filterType"  id="Building" value="Building" onclick="processEverything(0, 2)" disabled="true" style="padding-left: 15px"> Building<br>
+            <input type="radio" name="filterType"  id="Machine" value="Building" onclick="processEverything(0, 3)" disabled="true" style="padding-left: 15px"> Machine<br>
+            <input type="radio" name="filterType"  id="Others" value="Others" onclick="processEverything(0, 4)" disabled="true" style="padding-left: 15px"> Others<br>
+        </div>
+    </div>
+
+    <div style="padding-left: 30px; padding-top: 15px">
+        <input type="checkbox"  id="enableCountry" name="country" value="Company" onclick="enableCountryFilter()"> Filter by Country<br>
+        <div style="padding-left: 30px">
+            <input type="radio" name="filterType"  id="de" value="de" onclick="processEverything(1, 0)" disabled="true" style="padding-left: 15px"> Germany<br>
+            <input type="radio" name="filterType"  id="us" value="us" onclick="processEverything(1, 1)" disabled="true" style="padding-left: 15px"> United States<br>
         </div>
     </div>
 </div>

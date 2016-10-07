@@ -16,29 +16,31 @@ var iconNames = [];
 
 var filterMap = ["company", "factory", "building", "machine", "No"];
 
+var filterCountryMap = ["de", "us"];
+
 var app = angular.module('Enterprise2MapApp');
 
 
 
 // methods
 
-function processObjectsArray(objArray, detailsToAppendToPopUp, filterType)
+function processObjectsArray(objArray, detailsToAppendToPopUp, filterType, filterFeature, filterCountry)
 {
     var objNumber = 0;
     for (; objNumber < objArray.length; objNumber++)
     {
         var obj = objArray[objNumber];
-        processObject(obj, detailsToAppendToPopUp, filterType);
+        processObject(obj, detailsToAppendToPopUp, filterType, filterFeature, filterCountry);
     }
 }
 
-function processObject(obj, detailsToAppendToPopUp, filterType)
+function processObject(obj, detailsToAppendToPopUp, filterType, filterFeature, filterCountry)
 {
     // create its own popUp
     var popUpContent = createPopUp(obj, detailsToAppendToPopUp);
 
     // create its Annotation if required
-    createAnnotation(obj, popUpContent, filterType);
+    createAnnotation(obj, popUpContent, filterType, filterFeature, filterCountry);
 
     // check in case it has more arrays, process them too
     var objKeys = Object.keys(obj);
@@ -55,7 +57,7 @@ function processObject(obj, detailsToAppendToPopUp, filterType)
             var subObj = obj[keyValue];
             if(keyValue!="polygons" && subObj instanceof Array)
             {
-                processObjectsArray(subObj, popUpContent, filterType);
+                processObjectsArray(subObj, popUpContent, filterType, filterFeature, filterCountry);
             }
         }
     }
@@ -98,7 +100,42 @@ function createPopUp(obj, detailsToAppendToPopUp)
     return popupContent;
 }
 
-function createAnnotation(obj, popUpContent, filterType)
+var getJSON = function (url, callback) {
+    var xhr = new XMLHttpRequest();
+    xhr.open("get", url, true);
+    xhr.responseType = "json";
+    xhr.onload = function () {
+        var status = xhr.status;
+        if (status == 200) {
+            callback(null, xhr.response);
+        } else {
+            callback(status);
+        }
+    };
+    xhr.send();
+};
+
+
+function requestAddressNominatim(latLong, countryCode, itemType, item) {
+    var data;
+    getJSON('http://nominatim.openstreetmap.org/reverse?format=json&lat=' + parseFloat(latLong.valueOf().lat) + '&lon=' + parseFloat(latLong.valueOf().lng) + '&format=json', function (err, data) {
+        if(data.address.country_code == countryCode)
+        {
+            if(itemType == "m")
+            {
+                markersToAdd.addLayer(item);
+                markersCount += 1;
+            }
+            else if(itemType == "p")
+            {
+                polygonsToAdd.addLayer(item);
+                polygonsCount += 1;
+            }
+        }
+    });
+}
+
+function createAnnotation(obj, popUpContent, filterType, filterFeature, filterCountry)
 {
     if(obj.hasOwnProperty("polygons"))
     {
@@ -123,7 +160,20 @@ function createAnnotation(obj, popUpContent, filterType)
             // create marker in this case
             var point = obj.polygons[0];
             var marker = L.marker([parseFloat(point.lat.value), parseFloat(point.long.value)], {icon: iconToUse}).bindPopup(popUpContent);
-            if(filterType=="" || tempString.indexOf(filterType) != -1)
+
+            if(filterType == 0)
+            {
+                if(filterFeature=="" || tempString.indexOf(filterFeature) != -1)
+                {
+                    markersToAdd.addLayer(marker);
+                    markersCount +=1;
+                }
+            }
+            else if(filterType == 1)
+            {
+                requestAddressNominatim(centerOfPolygon, filterCountry, "m", marker)
+            }
+            else
             {
                 markersToAdd.addLayer(marker);
                 markersCount +=1;
@@ -141,17 +191,40 @@ function createAnnotation(obj, popUpContent, filterType)
             }
 
             var polygonToAdd = L.polygon(polygonPointsArray).bindPopup(popUpContent);
-            if(filterType=="" || tempString.indexOf(filterType) != -1) {
+            var centerOfPolygon = polygonToAdd.getBounds().getCenter();
+            if(filterType == 0)
+            {
+                if(filterFeature=="" || tempString.indexOf(filterFeature) != -1) {
+                    polygonsToAdd.addLayer(polygonToAdd);
+                    polygonsCount += 1;
+                }
+            }
+            else if(filterType == 1)
+            {
+                requestAddressNominatim(centerOfPolygon, filterCountry, "p", polygonToAdd)
+            }
+            else
+            {
                 polygonsToAdd.addLayer(polygonToAdd);
                 polygonsCount += 1;
             }
 
-            var centerOfPolygon = polygonToAdd.getBounds().getCenter();
-
             var companyMarker = L.marker(centerOfPolygon, {icon: iconToUse}).bindPopup(popUpContent);
-            if(filterType=="" || tempString.indexOf(filterType) != -1) {
+            if(filterType == 0)
+            {
+                if(filterFeature=="" || tempString.indexOf(filterFeature) != -1) {
+                    markersToAdd.addLayer(companyMarker);
+                    markersCount += 1;
+                }
+            }
+            else if(filterType == 1)
+            {
+                requestAddressNominatim(centerOfPolygon, filterCountry, "m", companyMarker);
+            }
+            else
+            {
                 markersToAdd.addLayer(companyMarker);
-                markersCount += 1;
+                markersCount +=1;
             }
         }
     }
@@ -173,7 +246,7 @@ function removeAllElementsFromMap() {
     polygonsCount = 0;
 }
 
-function processEverything(filterNumber)
+function processEverything(filterType, filterNumber)
 {
     if(markersToAdd!=null && polygonsToAdd!=null)
         removeAllElementsFromMap();
@@ -183,13 +256,26 @@ function processEverything(filterNumber)
     markersCount = 0;
     polygonsCount = 0;
 
-    var filterType = filterMap[filterNumber];
-    if(filterType == null)
-        filterType = "";
+    var filterFeature;
+    if(filterType == 0)
+    {
+        filterFeature = filterMap[filterNumber];
+        if(filterFeature == null)
+            filterFeature = "";
+    }
+
+    var filterCountry;
+    if(filterType == 1)
+    {
+        filterCountry = filterCountryMap[filterNumber];
+        if(filterCountry == null)
+            filterCountry = "";
+    }
+
     var i=0;
     for(; i<comps.length; i++)
     {
-        processObject(comps[i], "", filterType);
+        processObject(comps[i], "", filterType, filterFeature, filterCountry);
     }
 
     // show items on map
@@ -250,8 +336,8 @@ app.controller('TTLParseTestCtrl', function ($scope, TTLParseService) {
         comps = $scope.parsedTTL.companies;
 
         // process all companies
-        var filterType = ""
-        processEverything(filterType);
+        var filterFeature = ""
+        processEverything(filterFeature);
     }
 
     $scope.plotDataOnMap = function () {

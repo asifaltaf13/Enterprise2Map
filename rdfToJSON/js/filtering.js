@@ -29,6 +29,31 @@ function enableFilter()
 
         // show all the elements on the map
         removeAllElementsFromMap();
-        processEverything();
+        processEverything(0, "");
+    }
+}
+
+
+
+function enableCountryFilter()
+{
+    if (document.getElementById('enableCountry').checked) {
+        document.getElementById('de').checked = false;
+        document.getElementById('us').checked = false;
+        document.getElementById('de').disabled = false;
+        document.getElementById('us').disabled = false;
+        
+        // remove all and show selected items on the map
+        removeAllElementsFromMap();
+
+    } else {
+        document.getElementById('de').checked = false;
+        document.getElementById('us').checked = false;
+        document.getElementById('de').disabled = true;
+        document.getElementById('us').disabled = true;
+        
+        // show all the elements on the map
+        removeAllElementsFromMap();
+        processEverything(1, "");
     }
 }
