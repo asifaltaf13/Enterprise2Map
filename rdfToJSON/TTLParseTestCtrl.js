@@ -16,7 +16,7 @@ var iconNames = [];
 
 var filterMap = ["company", "factory", "building", "machine", "No"];
 
-var filterCountryMap = ["de", "us"];
+var filterCountryMap = ["de", "us", "ru", "gb", "ca"];
 
 var app = angular.module('Enterprise2MapApp');
 

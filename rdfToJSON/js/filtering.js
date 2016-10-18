@@ -45,8 +45,14 @@ function disableAllFeatures() {
 function disableAllCountries() {
     document.getElementById('de').checked = false;
     document.getElementById('us').checked = false;
+    document.getElementById('ru').checked = false;
+    document.getElementById('gb').checked = false;
+    document.getElementById('ca').checked = false;
     document.getElementById('de').disabled = true;
     document.getElementById('us').disabled = true;
+    document.getElementById('ru').disabled = true;
+    document.getElementById('gb').disabled = true;
+    document.getElementById('ca').disabled = true;
 }
 
 
@@ -58,8 +64,14 @@ function enableCountryFilter() {
 
         document.getElementById('de').checked = false;
         document.getElementById('us').checked = false;
+        document.getElementById('ru').checked = false;
+        document.getElementById('gb').checked = false;
+        document.getElementById('ca').checked = false;
         document.getElementById('de').disabled = false;
         document.getElementById('us').disabled = false;
+        document.getElementById('ru').disabled = false;
+        document.getElementById('gb').disabled = false;
+        document.getElementById('ca').disabled = false;
 
         // remove all and show selected items on the map
         removeAllElementsFromMap();
